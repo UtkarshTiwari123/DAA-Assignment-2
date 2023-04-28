@@ -2,7 +2,7 @@
 import java.util.*;
 
 public class FordFulkerson {
-    public static int maxFlow(int[][][] graph, int source, int sink) {
+    public static void maxFlow(int[][][] graph, int source, int sink) {
         // Create a copy of the graph to use as the residual graph
         int[][] residualGraph = new int[graph.length][graph[0].length];
         for (int i = 0; i < graph.length; i++) {
@@ -12,7 +12,7 @@ public class FordFulkerson {
         }
 
         int[] parent = new int[graph.length]; // Stores the parent of each node in the augmenting path
-        int maxFlow = 0;
+        //int maxFlow = 0;
 
         // Repeat until there are no more augmenting paths
         while (bfs(residualGraph, source, sink, parent)) {
@@ -32,10 +32,11 @@ public class FordFulkerson {
             }
 
             // Add the bottleneck capacity to the maximum flow
-            maxFlow += bottleneck;
+            //System.out.println("Bottleneck "+ bottleneck);
+            //maxFlow += bottleneck;
         }
 
-        return maxFlow;
+        //return maxFlow;
     }
 
     // Implements a breadth-first search to find an augmenting path
@@ -63,19 +64,28 @@ public class FordFulkerson {
     }
 
     public static void main(String[] args){
-        //{flow, capacity}
-        int graph[][][] = new int[][][]{{ {0, 0}, {0, 16}, {0, 13}, {0, 0}, {0, 0}, {0, 0} }, { {0,0}, {0,0}, {0,10}, {0,12}, {0,0}, {0,0} },
-            { {0,0}, {0,4}, {0,0}, {0,0}, {0,14}, {0,0} },  { {0,0}, {0,0}, {0,9}, {0,0}, {0,0}, {0,20} },
-            { {0,0}, {0,0}, {0,0}, {0,7}, {0,0}, {0,4} },   { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} }
+        //{flow, capacity}                  s      a       b     c     d       e      f      t
+        int graph[][][] = new int[][][]{{ {0, 0}, {0, 3}, {0, 2}, {0, 0}, {0, 5}, {0, 0}, {0, 0}, {0, 0} }, 
+                                        { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,2}, {0,0}, {0,4} },
+                                        { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0, 4}, {0,0} },  
+                                        { {0,0}, {0,5}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} },
+                                        { {0,0}, {0,0}, {0,3}, {0,4}, {0,0}, {0,0}, {0,0}, {0,0} },   
+                                        { {0,0}, {0,0}, {0,0}, {0,2}, {0,0}, {0,0}, {0,0}, {0,3} },
+                                        { {0,0}, {0,0}, {0,0}, {0,2}, {0,0}, {0,0}, {0,0}, {0,3}  },
+                                        { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}  }
         };
 
-        //FordFulkerson obj = new FordFulkerson();
-        int source = 0, sink = 5;
-        int maxflow = maxFlow(graph, source, sink);
-        System.out.println(maxflow);
-        for(int i = 0; i < 6; i++){
-            System.out.println(graph[0][i][0]);
+        //specify the source and the sink
+        int source = 0, sink = 7;
+        int max_flow = 0;
+        //int maxflow = maxFlow(graph, source, sink);
+        maxFlow(graph, source, sink);
+        //System.out.println(maxflow);
+        for(int i = 0; i < 8; i++){
+            max_flow += graph[0][i][0];
+            //System.out.println(graph[0][i][0]);
         }
+        System.out.println("Maxflow is: " + max_flow);
     }
 
 }
