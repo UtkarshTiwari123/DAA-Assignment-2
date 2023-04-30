@@ -98,9 +98,11 @@ public class FordFulkerson {
   }
     //static final int V = 8;
     public static void main(String[] args){
+
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the number the vertices:");
         int vertexCount = sc.nextInt();
+        long startTime = System.currentTimeMillis();
         int graph[][][] = new int[vertexCount][vertexCount][2];
         //{flow, capacity}                  s      a       b     c     d       e      f      t
         // int graph[][][] = new int[][][]{{ {0, 0}, {0, 3}, {0, 2}, {0, 0}, {0, 5}, {0, 0}, {0, 0}, {0, 0} }, 
@@ -151,6 +153,10 @@ public class FordFulkerson {
         }
         System.out.println("Maxflow is: " + max_flow);
         findMinCut(graph, source, sink, vertexCount);
+        long endTime = System.currentTimeMillis();
+        
+        long elapsedTime = (endTime - startTime);
+        System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
     }
 
 }

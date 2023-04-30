@@ -164,6 +164,8 @@ public class BipartiteMatching {
     System.out.println("Enter the vertices on the right side :");
     int right = sc.nextInt();
 
+    long startTime = System.currentTimeMillis();
+
 		// int vertexCount = 12;
 		int vertexCountIncludingSourceAndSink = vertexCount +2;
 
@@ -208,5 +210,9 @@ public class BipartiteMatching {
 		graph1BipartiteMatcher.fordFulkersonMaxFlow(source, sink);
 		System.out.println("\n");
   sc.close();
+  long endTime = System.currentTimeMillis();
+        
+        long elapsedTime = (endTime - startTime);
+        System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
 	}
 }
