@@ -12,31 +12,31 @@ class Point
 
 public class Main {
     
-    static Point[] P;
+    static Point[] P;//to store the coordinates of the input 2D points
     static double C;//penalty for extra segment    
     static int n;//number of points in P
-    static double[] M;
-    static double[][] Err;
-    static int[] Pos;
-    static double[][] slope;
-    static double[][] intercept;
+    static double[] M; //to store the optimal value of the cost in an iterative matter
+    static double[][] Err; // to store the error for each pair of points i,j
+    static int[] Pos; 
+    static double[][] slope; // to store the slope of the line segment in interval of point i,j
+    static double[][] intercept; // to store the intercept of the line segment in interval of point i,j
 
 
     public static void Eij() //to calculate error for all pairs of index i to index j in P
     {
-        double cumulativeX[] = new double[n+1];
-        double cumulativeY[] = new double[n+1];
-        double cumulativeXY[] = new double[n+1];
-        double cumulativeX2[] = new double[n+1];
-        double sumX, sumY, sumXY, sumX2, num, denom;
-        int diff;
+        double cumulativeX[] = new double[n+1]; //to store the cumulativc sum of x-coordinate of points till the given index
+        double cumulativeY[] = new double[n+1]; //to store the cumulativc sum of y-coordinate of points till the given index
+        double cumulativeXY[] = new double[n+1]; //to store the cumulativc sum of product of x-coordinate and y-coordinate of points till the given index
+        double cumulativeX2[] = new double[n+1]; //to store the cumulativc sum of square of x-coordinate of points till the given index
+        double sumX, sumY, sumXY, sumX2, num, denom;// num is temporary variable to calculate and store the numerator of the error function. denom is temporary variable to calculate and store the denomenator of the error function
+        int diff; //to store the difference between two indices i and j
 
         cumulativeX[0] = 0;
         cumulativeY[0] = 0;
         cumulativeXY[0] = 0;
         cumulativeX2[0] = 0;
 
-        for(int j = 1; j<= n; j++)
+        for(int j = 1; j<= n; j++)//calculating error eij, slope and intercept for all pairs i,j
         {
             cumulativeX[j] = cumulativeX[j-1] + P[j].x;
 		    cumulativeY[j] = cumulativeY[j-1] + P[j].y;
@@ -74,7 +74,7 @@ public class Main {
 
     }
 
-    public static void sortP() // sort P according to x values in ascending order using bubble sort
+    public static void sortP() // sort array of input points P according to values of x-coordinate of points in ascending order using bubble sort
     {
         for (int i = 1; i <= n - 1; i++)
         {
@@ -90,7 +90,7 @@ public class Main {
         }               
     }
 
-    public static double segLeastSq()//to calculate least segmented square errors and corresponding line segments
+    public static double segLeastSq()//to calculate least segmented square errors and corresponding output line segments
     {
         M[0] = 0;
         Pos[0] = 0;
@@ -114,19 +114,19 @@ public class Main {
 
         return M[n];
     }
-    public static void main(String args[])
+    public static void main(String args[]) throws Exception
     {
 
         try {
             File myObj = new File("input.txt");
             Scanner Sc = new Scanner(myObj);
-            C = Sc.nextInt();
+            C = Sc.nextDouble();
             n = Sc.nextInt();
             P = new Point[n+1];
             for(int i = 1; i<=n; i++)
             {
-                int a = Sc.nextInt();
-                int b = Sc.nextInt();
+                double a = Sc.nextDouble();
+                double b = Sc.nextDouble();
                 P[i] = new Point(a,b);
             }
             Sc.close();
@@ -134,6 +134,9 @@ public class Main {
             System.out.println("An error occurred.");
             e.printStackTrace();
           }
+          
+        BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
+          
         //System.out.println("hello");
         //n = 11;//number of points
         //P = new Point[n+1];
@@ -155,7 +158,7 @@ public class Main {
         Err = new double[n+1][n+1];
         slope = new double[n+1][n+1];
         intercept = new double[n+1][n+1];
-        for(int i = 0; i<=n; i++)
+        for(int i = 0; i<=n; i++) //assigning zero to all error values by default before we change the error values according to out need
         {
             for(int j = 0; j<=n; j++)
             {
@@ -163,19 +166,19 @@ public class Main {
             }
         }
         
-        sortP();
+        sortP(); //sort input points in ascending order of their x-coordinates
         /*for(int i = 1; i<=n; i++)
         {
             System.out.println(P[i].x + " " + P[i].y);
         }*/
 
-        double optval = segLeastSq();
+        double optval = segLeastSq(); //optval is the cost generated for the optimal solution, which is basically the minimum cost possible for the given input and penalty
         //System.out.println(optval);
 
-        System.out.println("Cost for optimal solution : " + optval);
-	
+        System.out.println("Cost for optimal solution : " + optval); //printing the cost of the optimal solution
+        
 	    // find the optimal solution
-	    Stack<Integer> lines = new Stack<>();
+	    Stack<Integer> lines = new Stack<>(); //creating stack to store the indices i,j for our output line segments to be used later to print the output
         int j = Pos[n];
         int i = n;
 	    while(i > 0)	
@@ -187,11 +190,15 @@ public class Main {
             
 	    }
     
-	    System.out.println("\nOptimal solution :");
+	    System.out.println("\nOptimal solution :");//printing the lines generated by our optimal solution
 	    while (!lines.empty())	{
 	    	i = lines.peek(); lines.pop();
 	    	j = lines.peek(); lines.pop();
 	    	System.out.println("Line Segment (y =" + slope[i][j] + " * x + " + intercept[i][j] + ") from points " +i+ " to " +j+ " with error " + Err[i][j]);
+
+            writer.write(slope[i][j] + " " + intercept[i][j] + "\n");
+            
 	    }
+        writer.close();
     }
 }

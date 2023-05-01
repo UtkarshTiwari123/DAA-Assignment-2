@@ -77,12 +77,22 @@ public class FordFulkerson {
 
       int[] parent = new int[V];
       while (bfs(rGraph, s, t, parent)) {
-          for (int v = t; v != s; v = parent[v]) {
-              int u = parent[v];
-              rGraph[u][v] -= 1;
-              rGraph[v][u] += 1;
-          }
-      }
+            // Find the bottleneck capacity of the augmenting path
+            int bottleneck = Integer.MAX_VALUE;
+            for (int i = t; i != s; i = parent[i]) {
+                int j = parent[i];
+                bottleneck = Math.min(bottleneck, rGraph[j][i]);
+            }
+
+            // Update the flow and residual graph along the augmenting path
+            for (int i = t; i != s; i = parent[i]) {
+                int j = parent[i];
+                graph[j][i][0] += bottleneck; // Increase flow in the original graph
+                rGraph[j][i] -= bottleneck; // Decrease capacity in the residual graph
+                rGraph[i][j] += bottleneck; // Increase capacity in the residual graph
+            }
+
+        }
 
       boolean[] visited = new boolean[V];
       dfs(rGraph, s, visited, V);
@@ -98,11 +108,9 @@ public class FordFulkerson {
   }
     //static final int V = 8;
     public static void main(String[] args){
-
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the number the vertices:");
         int vertexCount = sc.nextInt();
-        long startTime = System.currentTimeMillis();
         int graph[][][] = new int[vertexCount][vertexCount][2];
         //{flow, capacity}                  s      a       b     c     d       e      f      t
         // int graph[][][] = new int[][][]{{ {0, 0}, {0, 3}, {0, 2}, {0, 0}, {0, 5}, {0, 0}, {0, 0}, {0, 0} }, 
@@ -153,10 +161,6 @@ public class FordFulkerson {
         }
         System.out.println("Maxflow is: " + max_flow);
         findMinCut(graph, source, sink, vertexCount);
-        long endTime = System.currentTimeMillis();
-        
-        long elapsedTime = (endTime - startTime);
-        System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
     }
 
 }
